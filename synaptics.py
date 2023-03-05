@@ -33,11 +33,8 @@ class Synapse:
         if self.presynaptic.spiked.any() or self.postsynaptic.spiked.any():
             presynaptic = np.tile(self.presynaptic.impulses, len(self.postsynaptic)).reshape(len(self.postsynaptic), len(self.presynaptic))
             postsynaptic = np.tile(self.postsynaptic.impulses, len(self.presynaptic)).reshape(self.weights.shape)
-            
-            postsynaptic_impulses = presynaptic.T * np.array([self.postsynaptic.spiked])
-            
+            postsynaptic_impulses = presynaptic.T * np.array([self.postsynaptic.spiked])           
             presynaptic_impulses = postsynaptic.T * np.array([self.presynaptic.spiked])
-            print(presynaptic_impulses, '\n', postsynaptic_impulses.T, '\n')
-            
+            #print(presynaptic_impulses, '\n', postsynaptic_impulses.T, '\n')
             self.weights -= presynaptic_impulses.T * self.weights * learning_rate
             self.weights += postsynaptic_impulses * (1 - self.weights) * learning_rate * assymetry
