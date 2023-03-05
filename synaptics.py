@@ -36,5 +36,6 @@ class Synapse:
             postsynaptic_impulses = presynaptic.T * np.array([self.postsynaptic.spiked])           
             presynaptic_impulses = postsynaptic.T * np.array([self.presynaptic.spiked])
             #print(presynaptic_impulses, '\n', postsynaptic_impulses.T, '\n')
-            self.weights -= presynaptic_impulses.T * self.weights * learning_rate
-            self.weights += postsynaptic_impulses * (1 - self.weights) * learning_rate * assymetry
+            self.weights += postsynaptic_impulses * (1 - self.weights) * learning_rate
+            self.weights -= presynaptic_impulses.T * self.weights * learning_rate * assymetry
+            
