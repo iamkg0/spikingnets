@@ -72,7 +72,7 @@ class IzhikevichLayer(SNNLayer):
         else:
             self.transmitter_impact = -1
         self.ap_threshold = kwargs.get('ap_threshold', 30)
-        self.tau = kwargs.get('tau', 20)
+        self.tau = kwargs.get('tau', 30)
         self.synaptic_output = kwargs.get('synaptic_output', True)
         preset_list = ['RS', 'IB', 'CH', 'FS', 'TC', 'RZ', 'LTS', None]
         preset = kwargs.get('preset', None)
