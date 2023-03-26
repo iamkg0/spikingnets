@@ -106,6 +106,12 @@ class IzhikevichLayer(SNNLayer):
         self.v = temp_recovered[0] + temp_working[0]
         self.u = temp_recovered[1] + temp_working[1]
         return self.spiked.astype(float)
+    
+    def instant_rest(self):
+        self.v = np.ones(self.size) * self.c
+        self.u = np.ones(self.size) * self.b * self.v
+        self.spiked = np.zeros(self.size)
+        self.impulses = np.zeros(self.size)
 
 
 

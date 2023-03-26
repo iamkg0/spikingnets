@@ -15,7 +15,7 @@ class retina:
         self.rest_timer = 0
         self.visual_area = None
 
-    def add_object(self, object, position=[2,0]):
+    def add_object(self, object, position=[0,0]):
         self.object = object
         self.obj_position = position
         self.buffer_screen = np.zeros((self.size[0]+self.object.shape[0]*2, self.size[1]+self.object.shape[1]*2))
@@ -69,3 +69,22 @@ class retina:
             else:
                 self.delay_counter += 1
         return self.buffer_screen[self.visual_area[0][0]:self.visual_area[1][0], self.visual_area[0][1]:self.visual_area[1][1]]
+    
+    def show_current_state(self):
+        return self.buffer_screen[self.visual_area[0][0]:self.visual_area[1][0], self.visual_area[0][1]:self.visual_area[1][1]]
+    
+    def set_position_lazy(self, x='centered', y='centered'):
+        y_positions = {'centered': int((self.object.shape[0] + self.size[0]) / 2),
+                       'top': 0,
+                       'bottom': self.size[0] + self.object.shape[0]}
+        x_positions = {'centered': int((self.object.shape[1] + self.size[1]) / 2),
+                       'left': 0,
+                       'right': self.size[1] + self.object.shape[1]}
+
+        self.buffer_screen *= 0
+        a = x_positions[x]
+        b = a + self.object.shape[1]
+        c = y_positions[y]
+        d = c + self.object.shape[0]
+        self.obj_position = [c, a]
+        self.buffer_screen[c:d, a:b] = self.object
