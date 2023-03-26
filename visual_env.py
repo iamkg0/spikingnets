@@ -88,3 +88,11 @@ class retina:
         d = c + self.object.shape[0]
         self.obj_position = [c, a]
         self.buffer_screen[c:d, a:b] = self.object
+        self.rest_timer = 0
+        self.border_reached = False
+
+    def static_with_noize(self, noize_density=.2, noize_acceleration=1, noize_length=0):
+        # Doesnt work yet, just a placeholder
+        if self.rest_timer > noize_length:
+            self.rest_timer = 0
+            self.gain_noize(noize_density=noize_density, noize_acceleration=noize_acceleration)

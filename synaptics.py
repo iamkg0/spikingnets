@@ -1,4 +1,5 @@
 from layers import *
+from tempfile import TemporaryFile
 
 class Synapse:
     def __init__(self, presynaptic, postsynaptic, **kwargs):
@@ -37,3 +38,11 @@ class Synapse:
     def get_connection_info(self, pre_id=None, post_id=None):
         # This function will get sense someday
         return self.weights[pre_id, post_id]
+    
+    def save_weights(self, name='test_checkpoint.npy'):
+        with open(name, 'wb') as f:
+            np.save(f, self.weights)
+
+    def load_weights(self, name='test_checkpoint.npy'):
+        with open(name, 'rb') as f:
+            self.weights = np.load(f)
