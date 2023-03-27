@@ -57,9 +57,10 @@ class retina:
     
     def tick(self, delay=0, move_direction='right', noize_density=.2, noize_acceleration=1, rest=0):
         if self.border_reached:
-            self.gain_noize(noize_density=noize_density, noize_acceleration=noize_acceleration)
+            self.buffer_screen *= 0
             self.rest_timer += 1
             if self.rest_timer >= rest:
+                self.gain_noize(noize_density=noize_density, noize_acceleration=noize_acceleration)
                 self.border_reached = False
                 self.rest_timer = 0
         else:
@@ -73,7 +74,7 @@ class retina:
     def show_current_state(self):
         return self.buffer_screen[self.visual_area[0][0]:self.visual_area[1][0], self.visual_area[0][1]:self.visual_area[1][1]]
     
-    def set_position_lazy(self, x='centered', y='centered'):
+    def set_position_lazy(self, x='centered', y='centered', noize_density=0, noize_acceleration=0):
         y_positions = {'centered': int((self.object.shape[0] + self.size[0]) / 2),
                        'top': 0,
                        'bottom': self.size[0] + self.object.shape[0]}
@@ -87,6 +88,7 @@ class retina:
         c = y_positions[y]
         d = c + self.object.shape[0]
         self.obj_position = [c, a]
+        self.gain_noize(noize_density=noize_density, noize_acceleration=noize_acceleration)
         self.buffer_screen[c:d, a:b] = self.object
         self.rest_timer = 0
         self.border_reached = False
