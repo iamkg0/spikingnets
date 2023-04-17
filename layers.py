@@ -96,7 +96,7 @@ class IzhikevichLayer(SNNLayer):
         self.impulses = np.zeros(self.size)
 
     def dynamics(self):
-        self.v += self.resolution*(0.04*self.v**2 + 5*self.v + 140 - self.u + self.I) + np.random.uniform(-self.noize, self.noize)
+        self.v += self.resolution*(0.04*self.v**2 + 5*self.v + 140 - self.u + self.I) + np.random.uniform(-self.noize, self.noize, size=self.v.size)
         self.u += self.resolution*(self.a*(self.b * self.v - self.u))
         # AP AND RECOVERY:
         self.spiked = self.v >= self.ap_threshold
@@ -144,3 +144,16 @@ class IandFLayer(SNNLayer):
         temp_working = didnt_spike * self.v
         self.v = temp_recovered + temp_working
         return self.spiked.astype(float)
+    
+
+
+
+class SpikeEncoder(SNNLayer):
+    def __init__(self):
+        self.sample = None
+
+    def forward(self, time):
+        pass
+
+    def transform_sample(self, sample, k=1):
+        pass
