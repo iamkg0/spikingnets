@@ -1,3 +1,2 @@
 # spikingnets
-СМОТРИ ЛЕХА Я ЗНАЮ <br/>
-#### МАРКДАУНИЧ
+Just a small framework for development of spiking neural networks
