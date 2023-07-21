@@ -1,6 +1,6 @@
 import numpy as np
 
-class retina:
+class motion_pic:
     def __init__(self, size=(5,5)):
         self.size = size
         self.buffer_screen = None
@@ -44,29 +44,31 @@ class retina:
             ax1_end = self.obj_position[1] + self.object.shape[1]
         return self.obj_position[0], ax0_end, self.obj_position[1], ax1_end
     
-    def gain_noize(self, noize_density=.2, noize_acceleration=1):
+    def gain_noise(self, noise_density=.2, noise_acceleration=1):
         self.buffer_screen[self.visual_area[0][0]:self.visual_area[1][0],
-                           self.visual_area[0][1]:self.visual_area[1][1]] = np.random.choice(a=[1*noize_acceleration,0], size=self.size, p=[noize_density, 1-noize_density])
+                           self.visual_area[0][1]:self.visual_area[1][1]] = np.random.choice(a=[1*noise_acceleration,0], size=self.size, p=[noise_density, 1-noise_density])
 
-    def move_object(self, direction='right', noize_density=.2, noize_acceleration=1):
+    def move_object(self, direction='right', noise_density=.2, noise_acceleration=1):
         self.obj_position += np.array(self.directions[direction])
         self.buffer_screen *= 0
         a, b, c, d = self.determine_position()
-        self.gain_noize(noize_density=noize_density, noize_acceleration=noize_acceleration)
+        self.gain_noise(noise_density=noise_density, noise_acceleration=noise_acceleration)
         self.buffer_screen[a:b, c:d] = self.object
     
-    def tick(self, delay=0, move_direction='right', noize_density=.2, noize_acceleration=1, rest=0):
+    def tick(self, delay=0, move_direction='right', noise_density=.2, noise_acceleration=1, rest=0):
         if self.border_reached:
             self.buffer_screen *= 0
             self.rest_timer += 1
             if self.rest_timer >= rest:
-                self.gain_noize(noize_density=noize_density, noize_acceleration=noize_acceleration)
+                self.gain_noise(noise_density=noise_density, noise_acceleration=noise_acceleration)
                 self.border_reached = False
                 self.rest_timer = 0
         else:
             if self.delay_counter >= delay:
                 self.delay_counter = 0
-                self.move_object(direction=move_direction, noize_density=noize_density, noize_acceleration=noize_acceleration)
+                self.move_object(direction=move_direction, noise_density=noise_density, noise_acceleration=noise_acceleration)
+                # For lazy debug
+                #print(self.buffer_screen[self.visual_area[0][0]:self.visual_area[1][0], self.visual_area[0][1]:self.visual_area[1][1]])
             else:
                 self.delay_counter += 1
         return self.buffer_screen[self.visual_area[0][0]:self.visual_area[1][0], self.visual_area[0][1]:self.visual_area[1][1]]
@@ -74,7 +76,7 @@ class retina:
     def show_current_state(self):
         return self.buffer_screen[self.visual_area[0][0]:self.visual_area[1][0], self.visual_area[0][1]:self.visual_area[1][1]]
     
-    def set_position_lazy(self, x='centered', y='centered', noize_density=0, noize_acceleration=0):
+    def set_position_lazy(self, x='centered', y='centered', noise_density=0, noise_acceleration=0):
         y_positions = {'centered': int((self.object.shape[0] + self.size[0]) / 2),
                        'top': 0,
                        'bottom': self.size[0] + self.object.shape[0]}
@@ -88,13 +90,13 @@ class retina:
         c = y_positions[y]
         d = c + self.object.shape[0]
         self.obj_position = [c, a]
-        self.gain_noize(noize_density=noize_density, noize_acceleration=noize_acceleration)
+        self.gain_noise(noise_density=noise_density, noise_acceleration=noise_acceleration)
         self.buffer_screen[c:d, a:b] = self.object
         self.rest_timer = 0
         self.border_reached = False
 
-    def static_with_noize(self, noize_density=.2, noize_acceleration=1, noize_length=0):
+    def static_with_noise(self, noise_density=.2, noise_acceleration=1, noise_length=0):
         # Doesnt work yet, just a placeholder
-        if self.rest_timer > noize_length:
+        if self.rest_timer > noise_length:
             self.rest_timer = 0
-            self.gain_noize(noize_density=noize_density, noize_acceleration=noize_acceleration)
+            self.gain_noise(noise_density=noise_density, noise_acceleration=noise_acceleration)

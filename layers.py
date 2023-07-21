@@ -5,6 +5,10 @@ class SNNLayer:
         self.size = kwargs.get('size', 10)
         self.resolution = kwargs.get('resolution', .5)
         self.inhibitory = kwargs.get('inhibitory', False)
+        if self.inhibitory == False:
+            self.transmitter_impact = 1
+        else:
+            self.transmitter_impact = -1
         self.ap_threshold = kwargs.get('ap_threshold', None)
         self.I = kwargs.get('I', 0)
         self.spiked = np.zeros(self.size)
@@ -59,12 +63,12 @@ class IzhikevichLayer(SNNLayer):
             ap_threshold - the default threshold, on which AP is generated
             a, b, c, d - the parameters from original paper. Defaults correspond to RS configuration
             preset - the name of default preset from original paper, default is None
-            noize - applies additional random uniform noize to potential dynamics
+            noise - applies additional random uniform noise to potential dynamics
             tau - 
             synaptic_output - 
         '''
         self.size = size
-        self.noize = kwargs.get('noize', 0)
+        self.noise = kwargs.get('noise', 0)
         self.resolution = kwargs.get('resolution', .5)
         self.inhibitory = kwargs.get('inhibitory', False)
         if self.inhibitory == False:
@@ -96,7 +100,7 @@ class IzhikevichLayer(SNNLayer):
         self.impulses = np.zeros(self.size)
 
     def dynamics(self):
-        self.v += self.resolution*(0.04*self.v**2 + 5*self.v + 140 - self.u + self.I) + np.random.uniform(-self.noize, self.noize, size=self.v.size)
+        self.v += self.resolution*(0.04*self.v**2 + 5*self.v + 140 - self.u + self.I) + np.random.uniform(-self.noise, self.noise, size=self.v.size)
         self.u += self.resolution*(self.a*(self.b * self.v - self.u))
         # AP AND RECOVERY:
         self.spiked = self.v >= self.ap_threshold
@@ -120,7 +124,7 @@ class IzhikevichLayer(SNNLayer):
 class IandFLayer(SNNLayer):
     def __init__(self, size, **kwargs):
         self.size = size
-        self.noize = kwargs.get('noize', 0)
+        self.noise = kwargs.get('noise', 0)
         self.resolution = kwargs.get('resolution', 1)
         self.inhibitory = kwargs.get('inhibitory', False)
         if self.inhibitory == False:

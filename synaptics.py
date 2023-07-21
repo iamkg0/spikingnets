@@ -6,6 +6,7 @@ class Synapse:
         self.presynaptic = presynaptic
         self.postsynaptic = postsynaptic
         self.weights = np.random.uniform(low=.4, high=.6, size=(len(presynaptic), len(postsynaptic)))
+        self.modification = kwargs.get('modification', 1)
         
     def __getitem__(self, presynaptic_idx, postsynaptic_idx):
         return self.weights[presynaptic_idx, postsynaptic_idx]
@@ -23,7 +24,7 @@ class Synapse:
 
     def forward(self):
         self.presynaptic.forward()
-        currents = np.dot(self.presynaptic.propagate(), self.weights)
+        currents = np.dot(self.presynaptic.propagate() * self.modification, self.weights)
         self.postsynaptic.apply_current(currents)
 
     def STDP(self, learning_rate=.1, assymetry = 5):
@@ -46,3 +47,21 @@ class Synapse:
     def load_weights(self, name='test_checkpoint.npy'):
         with open(name, 'rb') as f:
             self.weights = np.load(f)
+
+
+
+
+class Conv:
+    def __init__(self, kernel_size=3, core_size=1, inh_impact=-1, exc_impact=1):
+        self.kernel_size = kernel_size
+        self.core_size = core_size
+        self.kernel = np.ones((kernel_size, kernel_size)) * inh_impact
+        self.kernel[1,1] = exc_impact
+
+    def forward(self, inp):
+        temp = []
+        for i in range(inp.shape[1] - self.kernel_size+1):
+            for j in range(inp.shape[0] - self.kernel_size+1):
+                receptive_field = np.sum(np.multiply(inp[i:self.kernel_size+i, j:self.kernel_size+j], self.kernel))
+                temp.append(receptive_field)
+        return np.array(temp)
