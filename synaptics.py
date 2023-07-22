@@ -52,6 +52,8 @@ class Synapse:
 
 
 class Conv:
+    # Doesnt work yet. Didn't need it in diploma project
+    # I will implement it later
     def __init__(self, kernel_size=3, core_size=1, inh_impact=-1, exc_impact=1):
         self.kernel_size = kernel_size
         self.core_size = core_size
