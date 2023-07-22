@@ -1,5 +1,4 @@
 from layers import *
-from tempfile import TemporaryFile
 
 class Synapse:
     def __init__(self, presynaptic, postsynaptic, **kwargs):
